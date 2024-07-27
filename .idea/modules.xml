@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AiBowProject.iml" filepath="$PROJECT_DIR$/.idea/modules/AiBowProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AiBowProject.main.iml" filepath="$PROJECT_DIR$/.idea/modules/AiBowProject.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AiBowProject.test.iml" filepath="$PROJECT_DIR$/.idea/modules/AiBowProject.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Orchestrator/Orchestrator.iml" filepath="$PROJECT_DIR$/Orchestrator/Orchestrator.iml" />
+    </modules>
+  </component>
+</project>

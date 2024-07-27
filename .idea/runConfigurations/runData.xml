@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="runData" type="Application" factoryName="Application" singleton="true">
+    <envs>
+      <env name="MOD_CLASSES" value="$PROJECT_DIR$/../AiBowProject\build\sourcesSets\main" />
+      <env name="MCP_MAPPINGS" value="official_1.21" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="net.minecraftforge.bootstrap.ForgeBootstrap" />
+    <module name="AiBowProject" />
+    <option name="PROGRAM_PARAMETERS" value="--launchTarget forge_userdev_data --assetIndex 17 --assetsDir C:\Users\mvandekamp\.gradle\caches\forge_gradle\assets --gameDir . --mod aibowproject --all --output C:\Users\mvandekamp\IdeaProjects\AiBowProject\src\generated\resources --existing C:\Users\mvandekamp\IdeaProjects\AiBowProject\src\main\resources" />
+    <option name="VM_PARAMETERS" value="-Dforge.logging.console.level=debug -Dforge.logging.markers=REGISTRIES -Djava.net.preferIPv6Addresses=system" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../AiBowProject\run-data" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks=":prepareRunDataCompile" externalProjectPath="$PROJECT_DIR$" />
+    </method>
+  </configuration>
+</component>

@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="runClient" type="Application" factoryName="Application" singleton="true">
+    <envs>
+      <env name="MOD_CLASSES" value="$PROJECT_DIR$/../AiBowProject\build\sourcesSets\main" />
+      <env name="MCP_MAPPINGS" value="official_1.21" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="net.minecraftforge.bootstrap.ForgeBootstrap" />
+    <module name="AiBowProject" />
+    <option name="PROGRAM_PARAMETERS" value="--launchTarget forge_userdev_client --version MOD_DEV --assetIndex 17 --assetsDir C:\Users\mvandekamp\.gradle\caches\forge_gradle\assets --gameDir ." />
+    <option name="VM_PARAMETERS" value="-Dforge.logging.console.level=debug -Dforge.logging.markers=REGISTRIES -Dforge.enabledGameTestNamespaces=aibowproject -Dforge.enableGameTest=true -Djava.net.preferIPv6Addresses=system -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../AiBowProject\run" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+      <option name="Gradle.BeforeRunTask" enabled="true" tasks=":prepareRunClientCompile" externalProjectPath="$PROJECT_DIR$" />
+    </method>
+  </configuration>
+</component>
