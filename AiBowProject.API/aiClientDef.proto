@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package AiBowProject.API;
+
+service AiClient {
+  rpc RegisterClient (RegisterRequest) returns (RegisterReply) {}
+  rpc Target (TargetRequest) returns (TargetReply) {}
+  rpc Result (ResultSubmission) returns (ResultReply) {}
+}
+
+message RegisterRequest {
+  string token = 1;
+}
+
+message RegisterReply {
+  string token = 1;
+  string clientId = 2;
+}
+
+message TargetRequest {
+  string token = 1;
+  string clientId = 2;
+  message TargetPos {
+    float x = 1;
+    float y = 2;
+    float z = 3;
+  }
+  message PlayerPos {
+    float x = 1;
+    float y = 2;
+    float z = 3;
+  }
+}
+message TargetReply {
+  string token = 1;
+  string clientId = 2;
+  int32 epoch = 3;
+  float hitProbability = 4;
+  message AimAt {
+    float jaw = 1;
+    float pitch = 2;
+    float roll = 3;
+    float holdLength = 4;
+  }
+}
+
+message ResultSubmission {
+  string token = 1;
+  string clientId = 2;
+  bool arrowHit = 3;
+  float nearestPointToTarget = 4;
+}
+
+message ResultReply {
+  string token = 1;
+  string clientId = 2;
+  bool ack = 3;
+}

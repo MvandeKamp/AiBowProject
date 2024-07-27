@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "de.mvdk.aibowproject.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "de.mvdk.aibowproject.refmap.json",
+  "mixins": [
+    "SetScreen"
+  ],
+  "client": [
+  ],
+  "minVersion": "0.8"
+}
