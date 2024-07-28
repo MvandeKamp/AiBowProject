@@ -20,28 +20,28 @@ message RegisterReply {
 message TargetRequest {
   string token = 1;
   string clientId = 2;
-  message TargetPos {
-    float x = 1;
-    float y = 2;
-    float z = 3;
-  }
-  message PlayerPos {
-    float x = 1;
-    float y = 2;
-    float z = 3;
-  }
+  TargetPos targetPos = 3;
 }
+
+message TargetPos {
+  float x = 1;
+  float y = 2;
+  float z = 3;
+}
+
 message TargetReply {
   string token = 1;
   string clientId = 2;
   int32 epoch = 3;
   float hitProbability = 4;
-  message AimAt {
-    float jaw = 1;
-    float pitch = 2;
-    float roll = 3;
-    float holdLength = 4;
-  }
+  AimAt aimtAt = 5;
+}
+
+message AimAt {
+  float jaw = 1;
+  float pitch = 2;
+  float roll = 3;
+  float holdLength = 4;
 }
 
 message ResultSubmission {
