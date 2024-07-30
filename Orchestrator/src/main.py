@@ -1,5 +1,6 @@
 import sys
 import os
+import uuid
 from concurrent import futures
 import grpc
 
@@ -7,6 +8,15 @@ import grpc
 sys.path.append(os.path.join(os.path.dirname(__file__), 'proto'))
 from proto import greeting_pb2_grpc, greeting_pb2
 from proto import aiClientDef_pb2_grpc, aiClientDef_pb2
+
+token = "321"
+clientList = []
+
+def GenNewClientId():
+    newId = (str(uuid.uuid4()))
+    clientList.append(newId)
+    return newId
+
 
 
 class Greeter(greeting_pb2_grpc.GreeterServicer):
@@ -17,10 +27,9 @@ class Greeter(greeting_pb2_grpc.GreeterServicer):
 
 class AiClient(aiClientDef_pb2_grpc.AiClientServicer):
     def RegisterClient(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        print("Greetings from %s!")
-        print("Greetings from %s!")
-        return aiClientDef_pb2.RegisterReply(token="123", clientId="fdgd")
+        if(token == request.token):
+            return aiClientDef_pb2.RegisterReply(token=token, clientId=GenNewClientId())
+        return
 
     def Target(self, request, context):
         """Missing associated documentation comment in .proto file."""
