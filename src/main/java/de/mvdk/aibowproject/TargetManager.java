@@ -18,6 +18,11 @@ public class TargetManager {
     private Player player;
     private ServerLevel world;
     private List<BlockPos> targets = new ArrayList<BlockPos>();
+    private GrpcClient grpcClient;
+
+    public TargetManager(GrpcClient comClient) {
+        grpcClient = comClient;
+    }
 
     public boolean Start(PlayerEvent.PlayerLoggedInEvent event) {
         player = (Player) event.getEntity();
@@ -82,6 +87,7 @@ public class TargetManager {
         if (isEmpty) {
             world.setBlockAndUpdate(targetPos, Blocks.TARGET.defaultBlockState());
         }
+        grpcClient.TargetRequest(new Vec3(x,y,z));
         return isEmpty;
     }
 }

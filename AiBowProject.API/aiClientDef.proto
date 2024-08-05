@@ -32,8 +32,6 @@ message TargetPos {
 message TargetReply {
   string token = 1;
   string clientId = 2;
-  int32 epoch = 3;
-  float hitProbability = 4;
   AimAt aimtAt = 5;
 }
 

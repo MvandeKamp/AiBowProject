@@ -99,9 +99,13 @@ public class GrpcClient {
 
 
         AiClientDef.TargetRequest request = AiClientDef.TargetRequest.newBuilder()
-                .setField(GetDescriptor(1, desc), this.token)
-                .setField(GetDescriptor(1, desc), this.clientId)
-                // TODO: Implement the target Pos
+                .setToken(this.token)
+                .setClientId(this.clientId)
+                .setTargetPos(AiClientDef.TargetPos.newBuilder()
+                        .setX((float)targetPos.x)
+                        .setY((float)targetPos.y)
+                        .setZ((float)targetPos.z)
+                        .build())
                 .build();
 
         try {

@@ -65,11 +65,10 @@ public class AiBowProject {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         GrpcClient comClient = new GrpcClient("localhost", 50051);
-
-        TargetManager targetManager = new TargetManager();
+        TargetManager targetManager = new TargetManager(comClient);
         MinecraftForge.EVENT_BUS.register(new PlayerJoinEventHandler(targetManager));
-        MinecraftForge.EVENT_BUS.register(new ArrowEventHandler(targetManager));
-
+        MinecraftForge.EVENT_BUS.register(new ArrowEventHandler(targetManager, comClient));
+        MinecraftForge.EVENT_BUS.register(new PlayerMovementHandler());
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);

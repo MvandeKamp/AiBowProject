@@ -1,0 +1,30 @@
+class ResultList:
+    def __init__(self):
+        self.items = []
+
+    def append(self, clientId, distance, isHit):
+        # Add a tuple (clientId, x, y, z) to the list
+        self.items.append((clientId, distance, isHit))
+
+    def remove(self, clientId):
+        # Remove the first occurrence of the item with the specified clientId
+        for i, item in enumerate(self.items):
+            if item[0] == clientId:
+                del self.items[i]
+                return
+        raise ValueError(f"Item with clientId {clientId} not found")
+
+    def get(self, clientId):
+        # Get the item with the specified clientId
+        for item in self.items:
+            if item[0] == clientId:
+                return item
+        return None
+
+    def size(self):
+        # Return the number of items in the list
+        return len(self.items)
+
+    def __str__(self):
+        # Return a string representation of the list
+        return str(self.items)
