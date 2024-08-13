@@ -2,9 +2,9 @@ class OutputList:
     def __init__(self):
         self.items = []
 
-    def append(self, clientId, x, y, z, hlength):
+    def append(self, clientId, x, y, hlength):
         # Add a tuple (clientId, x, y, z) to the list
-        self.items.append((clientId, x, y, z, hlength))
+        self.items.append((clientId, x, y, hlength))
 
     def remove(self, clientId):
         # Remove the first occurrence of the item with the specified clientId

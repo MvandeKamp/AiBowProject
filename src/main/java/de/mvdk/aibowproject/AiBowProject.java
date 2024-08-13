@@ -18,6 +18,7 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -52,6 +53,7 @@ public class AiBowProject {
     // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
     public static final RegistryObject<Item> EXAMPLE_ITEM = ITEMS.register("example_item", () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
             .alwaysEdible().nutrition(1).saturationModifier(2f).build())));
+    public static TargetManager targetManager;
 
     // Creates a creative tab with the id "examplemod:example_tab" for the example item, that is placed after the combat tab
     public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
@@ -63,12 +65,12 @@ public class AiBowProject {
 
     public AiBowProject() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        GrpcClient comClient = new GrpcClient("localhost", 50051);
-        TargetManager targetManager = new TargetManager(comClient);
+        PlayerMovementHandler playerMovementHandler = new PlayerMovementHandler();
+        MinecraftForge.EVENT_BUS.register(playerMovementHandler);
+        GrpcClient comClient = new GrpcClient("localhost", 50051, playerMovementHandler);
+        targetManager = new TargetManager(comClient);
         MinecraftForge.EVENT_BUS.register(new PlayerJoinEventHandler(targetManager));
         MinecraftForge.EVENT_BUS.register(new ArrowEventHandler(targetManager, comClient));
-        MinecraftForge.EVENT_BUS.register(new PlayerMovementHandler());
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
@@ -102,6 +104,13 @@ public class AiBowProject {
 
         Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
     }
+
+    @SubscribeEvent
+    public void onWorldUnload(ServerStoppingEvent event) {
+        targetManager.RemoveAll();
+    }
+
+
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event)

@@ -32,14 +32,13 @@ message TargetPos {
 message TargetReply {
   string token = 1;
   string clientId = 2;
-  AimAt aimtAt = 5;
+  AimAt aimtAtPos = 3;
 }
 
 message AimAt {
   float jaw = 1;
   float pitch = 2;
-  float roll = 3;
-  float holdLength = 4;
+  float holdLength = 3;
 }
 
 message ResultSubmission {

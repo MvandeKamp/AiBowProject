@@ -32,14 +32,14 @@ public class TargetManager {
     }
 
     public double DistanceToClosestTarget(Vec3 pos) {
-        BlockPos closestTargetBlock = GetClosestTargetPos(pos);
+        BlockPos closestTargetBlock = GetClosestTargetPos(pos, true);
         double distance = DistanceToCenter(pos, closestTargetBlock);
         return distance;
     }
     private double DistanceToCenter(Vec3 pos, BlockPos target) {
         return pos.distanceTo(new Vec3(target.getX() + 0.5, target.getY() + 0.5, target.getZ() + 0.5));
     }
-    public BlockPos GetClosestTargetPos(Vec3 pos) {
+    public BlockPos GetClosestTargetPos(Vec3 pos, boolean test) {
         BlockPos closestTargetBlock = new BlockPos(0, 0, 0);
         double closestDistance = 10000;
         for(BlockPos target : targets) {
@@ -53,7 +53,7 @@ public class TargetManager {
     }
 
     public BlockPos IsHit(Vec3 pos) {
-        BlockPos closestTargetBlock = GetClosestTargetPos(pos);
+        BlockPos closestTargetBlock = GetClosestTargetPos(pos, true);
         double distance = DistanceToClosestTarget(pos);
         System.out.println("distance: " + distance);
         // Could calulate center of block but an offset should be precise enough
@@ -63,14 +63,19 @@ public class TargetManager {
         return null;
     }
 
-    public boolean RemoveOldSpawnNew(BlockPos pos) {
+    public BlockPos RemoveOldSpawnNew(BlockPos pos) {
         world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
         targets.remove(pos);
-        SpawnNewTarget();
-        return true;
+        return SpawnNewTarget();
     }
 
-    private boolean SpawnNewTarget(){
+    public void RemoveAll(){
+        for(BlockPos target : targets) {
+            world.setBlockAndUpdate(target, Blocks.AIR.defaultBlockState());
+        }
+    }
+
+    private BlockPos SpawnNewTarget(){
         Vec3 playerPos = player.getPosition(0f);
         Random random = new Random();
 
@@ -88,6 +93,6 @@ public class TargetManager {
             world.setBlockAndUpdate(targetPos, Blocks.TARGET.defaultBlockState());
         }
         grpcClient.TargetRequest(new Vec3(x,y,z));
-        return isEmpty;
+        return targetPos;
     }
 }

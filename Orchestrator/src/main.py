@@ -40,12 +40,17 @@ class AiClient(aiClientDef_pb2_grpc.AiClientServicer):
                 time.sleep(0.1)
                 if aim_at is not None:
                     break
-            return aiClientDef_pb2.TargetReply(token=token, clientId=request.clientId, aimAt={
-                "jaw": aim_at[1],
-                "pitch": aim_at[2],
-                "roll": aim_at[3],
-                "holdLength": aim_at[4]
-            })
+            target_reply = aiClientDef_pb2.TargetReply()
+            target_reply.clientId = request.clientId
+            target_reply.token = request.token
+
+            aim_reply = aiClientDef_pb2.AimAt()
+            aim_reply.jaw = aim_at[1]
+            aim_reply.pitch = aim_at[2]
+            aim_reply.holdLength = aim_at[3]
+            target_reply.aimtAtPos.CopyFrom(aim_reply)
+            neatImpl.outputList.remove(aim_at[0])
+            return target_reply
         return
 
     def Result(self, request, context):
