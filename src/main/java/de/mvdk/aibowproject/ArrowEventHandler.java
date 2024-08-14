@@ -19,6 +19,7 @@ public class ArrowEventHandler {
     private static final Map<AbstractArrow, TrackedArrowInfo> trackedArrows = new HashMap<>();
     private TargetManager targetManager;
     private GrpcClient grpcClient;
+    private long lastTrackedArrow = System.currentTimeMillis()
 
     public ArrowEventHandler(TargetManager targetManager, GrpcClient comClient){
         this.targetManager = targetManager;
@@ -35,6 +36,16 @@ public class ArrowEventHandler {
 
     @SubscribeEvent
     public void onTick(TickEvent.ServerTickEvent event) {
+        // Even more resilancy after 60 seconds request a new one
+        if(System.currentTimeMillis() - lastTrackedArrow > 60000){
+            if (!targetManager.targets.isEmpty()) {
+                targetManager.RemoveOldSpawnNew(itemList.get(0));
+            } else {
+                targetManager.SpawnNewTarget();
+            }
+        }
+
+
         ServerLevel level = event.getServer().overworld();
         Map<AbstractArrow, TrackedArrowInfo> toRemove = new HashMap<>();
         for (Map.Entry<AbstractArrow, TrackedArrowInfo> entry : trackedArrows.entrySet()) {
@@ -44,6 +55,8 @@ public class ArrowEventHandler {
                 toRemove.put(arrow, info);
                 continue;
             }
+            lastTrackedArrow = System.currentTimeMillis();
+
             BlockPos closestTarget = targetManager.GetClosestTargetPos(arrow.position(), true);
             double distance = targetManager.DistanceToClosestTarget(arrow.position());
             info.setDistance(distance);

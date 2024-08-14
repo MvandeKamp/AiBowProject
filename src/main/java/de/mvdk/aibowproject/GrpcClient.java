@@ -16,6 +16,7 @@ public class GrpcClient {
     public String clientId = "";
     private String token = "321";
     private PlayerMovementHandler movementHandler;
+    public GUID workItemID;
 
     public GrpcClient(String host, int port, PlayerMovementHandler playerMovementHandler) {
         movementHandler = playerMovementHandler;
@@ -65,6 +66,13 @@ public class GrpcClient {
             @Override
             public void onNext(AiClientDef.TargetReply reply) {
                 try {
+                    // Dont want to process the same workitem twice will request a new one just for resilancy
+                    if(workItemID != reply.getworkItemID()){
+                        workItemID = reply.getworkItemID();
+                    } else {
+                        TargetRequest(targetPos);
+                        return;
+                    }
                     movementHandler.aimPos = new Vec2(reply.getAimtAtPos().getJaw(), reply.getAimtAtPos().getPitch());
                     movementHandler.fireTicks = 20;
                     movementHandler.shouldFire = true;
@@ -95,10 +103,14 @@ public class GrpcClient {
                 .setArrowHit(arrowHit)
                 .setToken(this.token)
                 .setNearestPointToTarget((float) distanceNearestToTarget)
+                .setWorkItemId = workItemID
                 .build();
 
         try {
             AiClientDef.ResultReply reply = blockStub.result(request);
+
+            // RESET Work ItemId
+            workItemID = null;
             return reply.getAck();
         } catch (StatusRuntimeException e) {
             System.out.println("RPC failed: " + e.getStatus());

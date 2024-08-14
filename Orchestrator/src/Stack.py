@@ -1,24 +1,30 @@
+import asyncio
+
 class Stack:
     def __init__(self):
         self.stack = []
+        self.lock = asyncio.Lock()
 
-    def push(self, clientId, x, y, z):
-        # Push a tuple (clientId, x, y, z) onto the stack
-        self.stack.append((clientId, x, y, z))
+    async def push(self, clientId, x, y, z, workItemId):
+        # Push a tuple (clientId, x, y, z, workItemId) onto the stack
+        async with self.lock:
+            self.stack.append((clientId, x, y, z, workItemId))
 
-    def pop(self):
+    async def pop(self):
         # Pop the top item from the stack and return it
-        if not self.is_empty():
-            return self.stack.pop()
-        else:
-            raise IndexError("pop from an empty stack")
+        async with self.lock:
+            if not self.is_empty():
+                return self.stack.pop()
+            else:
+                raise IndexError("pop from an empty stack")
 
-    def peek(self):
+    async def peek(self):
         # Peek at the top item of the stack without removing it
-        if not self.is_empty():
-            return self.stack[-1]
-        else:
-            raise IndexError("peek from an empty stack")
+        async with self.lock:
+            if not self.is_empty():
+                return self.stack[-1]
+            else:
+                raise IndexError("peek from an empty stack")
 
     def is_empty(self):
         # Check if the stack is empty

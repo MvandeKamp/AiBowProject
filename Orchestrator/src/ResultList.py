@@ -2,22 +2,22 @@ class ResultList:
     def __init__(self):
         self.items = []
 
-    def append(self, clientId, distance, isHit):
+    def append(self, clientId, distance, isHit, workItemId):
         # Add a tuple (clientId, x, y, z) to the list
-        self.items.append((clientId, distance, isHit))
+        self.items.append((clientId, distance, isHit, workItemId))
 
-    def remove(self, clientId):
+    def remove(self, clientId, workItemId):
         # Remove the first occurrence of the item with the specified clientId
         for i, item in enumerate(self.items):
-            if item[0] == clientId:
+            if item[0] == clientId and item[4] == workItemId:
                 del self.items[i]
                 return
         raise ValueError(f"Item with clientId {clientId} not found")
 
-    def get(self, clientId):
+    def get(self, clientId, workItemId):
         # Get the item with the specified clientId
         for item in self.items:
-            if item[0] == clientId:
+            if item[0] == clientId and item[4] == workItemId:
                 return item
         return None
 

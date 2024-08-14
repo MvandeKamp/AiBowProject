@@ -33,12 +33,14 @@ message TargetReply {
   string token = 1;
   string clientId = 2;
   AimAt aimtAtPos = 3;
+  string workItemId = 4;
 }
 
 message AimAt {
   float jaw = 1;
   float pitch = 2;
   float holdLength = 3;
+  string workItemId = 4;
 }
 
 message ResultSubmission {
@@ -46,10 +48,12 @@ message ResultSubmission {
   string clientId = 2;
   bool arrowHit = 3;
   float nearestPointToTarget = 4;
+  string workItemId = 5;
 }
 
 message ResultReply {
   string token = 1;
   string clientId = 2;
   bool ack = 3;
+  string workItemId = 4;
 }

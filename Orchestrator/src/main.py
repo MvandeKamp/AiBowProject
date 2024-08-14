@@ -34,15 +34,17 @@ class AiClient(aiClientDef_pb2_grpc.AiClientServicer):
 
     def Target(self, request, context):
         if token == request.token:
-            neatImpl.inputStack.push(request.clientId, request.targetPos.x, request.targetPos.y, request.targetPos.z)
+            workItemId = (str(uuid.uuid4()))
+            neatImpl.inputStack.push(request.clientId, request.targetPos.x, request.targetPos.y, request.targetPos.z, workItemId)
             while True:
-                aim_at = neatImpl.outputList.get(request.clientId)
+                aim_at = neatImpl.outputList.get(request.clientId, workItemId)
                 time.sleep(0.1)
                 if aim_at is not None:
                     break
             target_reply = aiClientDef_pb2.TargetReply()
             target_reply.clientId = request.clientId
             target_reply.token = request.token
+            target_reply.workItemId = workItemId
 
             aim_reply = aiClientDef_pb2.AimAt()
             aim_reply.jaw = aim_at[1]
@@ -55,9 +57,9 @@ class AiClient(aiClientDef_pb2_grpc.AiClientServicer):
 
     def Result(self, request, context):
         if token == request.token:
-            neatImpl.resultList.append(request.clientId, request.nearestPointToTarget, request.arrowHit)
-            return aiClientDef_pb2.ResultReply(token=token, clientId=request.clientId, ack=True)
-        return aiClientDef_pb2.ResultReply(token=token, clientId=request.clientId, ack=False)
+            neatImpl.resultList.append(request.clientId, request.nearestPointToTarget, request.arrowHit, request.workItemId)
+            return aiClientDef_pb2.ResultReply(token=token, clientId=request.clientId, ack=True, workItemId=request.workItemId)
+        return aiClientDef_pb2.ResultReply(token=token, clientId=request.clientId, ack=False, workItemId=request.workItemId)
 
 
 def serveAiServer():

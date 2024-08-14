@@ -17,7 +17,7 @@ public class TargetManager {
 
     private Player player;
     private ServerLevel world;
-    private List<BlockPos> targets = new ArrayList<BlockPos>();
+    public List<BlockPos> targets = new ArrayList<BlockPos>();
     private GrpcClient grpcClient;
 
     public TargetManager(GrpcClient comClient) {
@@ -75,7 +75,7 @@ public class TargetManager {
         }
     }
 
-    private BlockPos SpawnNewTarget(){
+    public BlockPos SpawnNewTarget(){
         Vec3 playerPos = player.getPosition(0f);
         Random random = new Random();
 
