@@ -22,20 +22,20 @@ async def process_genome(genome_id, genome, config):
     global inputStack, outputList, resultList
     while inputStack.size() <= 0:
         await asyncio.sleep(0.5)
-    id, x, y, z, workItemId = inputStack.pop()
+    id, x, y, z, workItemId = await inputStack.pop()
     aim_at = net.activate((x, y, z))
 
     # TODO: apply a weight bias if i need to cull the genomes output
     # TODO: a heavy weight bias for wrong bow holding ticks (if its to small the client is not able to fire)
     aim_at = [min(180, max(-180, round(val, 3))) for val in aim_at]
     outputList.append(id, aim_at[0], aim_at[1], aim_at[2], workItemId)
-    print(datetime.datetime.now(), f" Client: {id}, Tartget_x: {x}, Target_y: {y}, Target_z: {z} : Aim: {aim_at}")
+    print(datetime.datetime.now(), f" Client: {id}, Workitem: {workItemId}, Tartget_x: {x}, Target_y: {y}, Target_z: {z} : Aim: {aim_at}")
 
     # Do a recursion after 60 seconds if no result is given by the client (fail save so the genome is not lost)
     waitTime = time.time()
-    while resultList.get(id) is None:
+    while resultList.get(id, workItemId) is None:
         if(time.time() - waitTime > 60):
-            process_genome(genome_id, genome, net)
+            await process_genome(genome_id, genome, net)
             return
         await asyncio.sleep(0.5)
 

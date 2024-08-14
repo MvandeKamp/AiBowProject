@@ -2,12 +2,15 @@ package de.mvdk.aibowproject;
 
 import AiBowProject.API.AiClientDef;
 import com.google.protobuf.Descriptors;
+import com.sun.jna.platform.win32.Guid;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Objects;
 
 import static AiBowProject.API.AiClientGrpc.*;
 
@@ -16,7 +19,7 @@ public class GrpcClient {
     public String clientId = "";
     private String token = "321";
     private PlayerMovementHandler movementHandler;
-    public GUID workItemID;
+    public String workItemID;
 
     public GrpcClient(String host, int port, PlayerMovementHandler playerMovementHandler) {
         movementHandler = playerMovementHandler;
@@ -66,11 +69,11 @@ public class GrpcClient {
             @Override
             public void onNext(AiClientDef.TargetReply reply) {
                 try {
-                    // Dont want to process the same workitem twice will request a new one just for resilancy
-                    if(workItemID != reply.getworkItemID()){
-                        workItemID = reply.getworkItemID();
+                    //Dont want to process the same workitem twice will request a new one just for resilancy
+                    if(!Objects.equals(workItemID, reply.getWorkItemId())){
+                       workItemID = reply.getWorkItemId();
                     } else {
-                        TargetRequest(targetPos);
+                       TargetRequest(targetPos);
                         return;
                     }
                     movementHandler.aimPos = new Vec2(reply.getAimtAtPos().getJaw(), reply.getAimtAtPos().getPitch());
@@ -98,12 +101,18 @@ public class GrpcClient {
         Descriptors.Descriptor desc = AiClientDef.ResultSubmission.getDescriptor();
 
 
+        // Fail save for old or duplicated arrows so we dont send submissions twice
+        if(workItemID == null){
+            return false;
+        }
+
+
         AiClientDef.ResultSubmission request = AiClientDef.ResultSubmission.newBuilder()
                 .setClientId(this.clientId)
                 .setArrowHit(arrowHit)
                 .setToken(this.token)
                 .setNearestPointToTarget((float) distanceNearestToTarget)
-                .setWorkItemId = workItemID
+                .setWorkItemId(workItemID)
                 .build();
 
         try {

@@ -1,3 +1,4 @@
+import asyncio
 import sys
 import os
 import time
@@ -35,7 +36,15 @@ class AiClient(aiClientDef_pb2_grpc.AiClientServicer):
     def Target(self, request, context):
         if token == request.token:
             workItemId = (str(uuid.uuid4()))
-            neatImpl.inputStack.push(request.clientId, request.targetPos.x, request.targetPos.y, request.targetPos.z, workItemId)
+
+            # TODO one client should only be allowed to have one input submission
+            asyncio.run(neatImpl.inputStack.push(
+                request.clientId,
+                request.targetPos.x,
+                request.targetPos.y,
+                request.targetPos.z,
+                workItemId))
+
             while True:
                 aim_at = neatImpl.outputList.get(request.clientId, workItemId)
                 time.sleep(0.1)
@@ -51,7 +60,7 @@ class AiClient(aiClientDef_pb2_grpc.AiClientServicer):
             aim_reply.pitch = aim_at[2]
             aim_reply.holdLength = aim_at[3]
             target_reply.aimtAtPos.CopyFrom(aim_reply)
-            neatImpl.outputList.remove(aim_at[0])
+            neatImpl.outputList.remove(aim_at[0], workItemId)
             return target_reply
         return
 

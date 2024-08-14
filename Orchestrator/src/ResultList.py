@@ -9,7 +9,7 @@ class ResultList:
     def remove(self, clientId, workItemId):
         # Remove the first occurrence of the item with the specified clientId
         for i, item in enumerate(self.items):
-            if item[0] == clientId and item[4] == workItemId:
+            if item[0] == clientId and item[3] == workItemId:
                 del self.items[i]
                 return
         raise ValueError(f"Item with clientId {clientId} not found")
@@ -17,7 +17,7 @@ class ResultList:
     def get(self, clientId, workItemId):
         # Get the item with the specified clientId
         for item in self.items:
-            if item[0] == clientId and item[4] == workItemId:
+            if item[0] == clientId and item[3] == workItemId:
                 return item
         return None
 

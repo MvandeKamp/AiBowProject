@@ -19,7 +19,7 @@ public class ArrowEventHandler {
     private static final Map<AbstractArrow, TrackedArrowInfo> trackedArrows = new HashMap<>();
     private TargetManager targetManager;
     private GrpcClient grpcClient;
-    private long lastTrackedArrow = System.currentTimeMillis()
+    private long lastTrackedArrow = System.currentTimeMillis();
 
     public ArrowEventHandler(TargetManager targetManager, GrpcClient comClient){
         this.targetManager = targetManager;
@@ -39,10 +39,12 @@ public class ArrowEventHandler {
         // Even more resilancy after 60 seconds request a new one
         if(System.currentTimeMillis() - lastTrackedArrow > 60000){
             if (!targetManager.targets.isEmpty()) {
-                targetManager.RemoveOldSpawnNew(itemList.get(0));
+                targetManager.RemoveOldSpawnNew(targetManager.targets.getFirst());
             } else {
+                targetManager.RemoveAll();
                 targetManager.SpawnNewTarget();
             }
+            lastTrackedArrow = System.currentTimeMillis();
         }
 
 
