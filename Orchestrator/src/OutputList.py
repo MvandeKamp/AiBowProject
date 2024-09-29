@@ -14,6 +14,9 @@ class OutputList:
                 return
         return None
 
+    def size(self):
+        return len(self.items)
+
     def get(self, clientId, workItemId):
         # Get the item with the specified clientId
         for item in self.items:

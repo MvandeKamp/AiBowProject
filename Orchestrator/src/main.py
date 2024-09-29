@@ -37,17 +37,26 @@ class AiClient(aiClientDef_pb2_grpc.AiClientServicer):
         if token == request.token:
             workItemId = (str(uuid.uuid4()))
 
-            # TODO one client should only be allowed to have one input submission
-            asyncio.run(neatImpl.inputStack.push(
-                request.clientId,
-                request.targetPos.x,
-                request.targetPos.y,
-                request.targetPos.z,
-                workItemId))
+            async def process_request(neatImpl, request, workItemId):
+                if await neatImpl.inputStack.element_exists(request.clientId):
+                    await neatImpl.inputStack.element_remove(request.clientId)
+                    neatImpl.resultList.remove_all_from_client(request.clientId)
+                await neatImpl.inputStack.push(
+                    request.clientId,
+                    request.targetPos.x,
+                    request.targetPos.y,
+                    request.targetPos.z,
+                    workItemId
+                )
 
+            asyncio.run(process_request(neatImpl, request, workItemId))
+
+            waitTime = time.time()
             while True:
                 aim_at = neatImpl.outputList.get(request.clientId, workItemId)
                 time.sleep(0.1)
+                if (time.time() - waitTime > 65):
+                    return
                 if aim_at is not None:
                     break
             target_reply = aiClientDef_pb2.TargetReply()
@@ -88,7 +97,7 @@ def handleConsole(executor):
             executor.submit(neatImpl.run())
 
 
-with futures.ThreadPoolExecutor(max_workers=10) as executor:
+with futures.ThreadPoolExecutor(max_workers=12) as executor:
     # Schedule the gRPC server to run
     executor.submit(serveAiServer)
 

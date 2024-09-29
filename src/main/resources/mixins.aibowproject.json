@@ -2,11 +2,15 @@
   "required": true,
   "package": "de.mvdk.aibowproject.mixins",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "de.mvdk.aibowproject.refmap.json",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "verbose": true,
   "mixins": [
     "SetScreen"
   ],
   "client": [
+    "SetScreen"
   ],
-  "minVersion": "0.8"
+  "server": []
 }

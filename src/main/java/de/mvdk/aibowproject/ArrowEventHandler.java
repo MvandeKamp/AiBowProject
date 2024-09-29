@@ -53,7 +53,7 @@ public class ArrowEventHandler {
         for (Map.Entry<AbstractArrow, TrackedArrowInfo> entry : trackedArrows.entrySet()) {
             AbstractArrow arrow = entry.getKey();
             TrackedArrowInfo info = entry.getValue();
-            if (!arrow.isAlive()) {
+            if (!arrow.isAlive() || arrow.tickCount > 200) {
                 toRemove.put(arrow, info);
                 continue;
             }
@@ -79,17 +79,17 @@ public class ArrowEventHandler {
                 for (ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()) {
                     player.sendSystemMessage(Component.literal("Hit: " + hit + " distance: " + distance));
                 }
-                targetManager.RemoveOldSpawnNew(hit);
+                toRemove.put(arrow, info);
             }
 
         }
         for (AbstractArrow arrow : toRemove.keySet()) {
             var value = trackedArrows.get(arrow);
             grpcClient.ResultSubmission(value.hit, value.distance);
-            if(value.position != null){
-                targetManager.RemoveOldSpawnNew(value.position);
-            }
+            targetManager.RemoveAll();
+            targetManager.SpawnNewTarget();
             trackedArrows.remove(arrow);
+            arrow.discard();
         }
     }
 

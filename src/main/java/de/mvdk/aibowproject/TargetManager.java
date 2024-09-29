@@ -9,6 +9,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -19,6 +20,8 @@ public class TargetManager {
     private ServerLevel world;
     public List<BlockPos> targets = new ArrayList<BlockPos>();
     private GrpcClient grpcClient;
+    private boolean singleTarget = true;
+
 
     public TargetManager(GrpcClient comClient) {
         grpcClient = comClient;
@@ -57,7 +60,7 @@ public class TargetManager {
         double distance = DistanceToClosestTarget(pos);
         System.out.println("distance: " + distance);
         // Could calulate center of block but an offset should be precise enough
-        if(distance < 1.35) {
+        if(distance <= 0.866) {
             return closestTargetBlock;
         }
         return null;
@@ -69,9 +72,12 @@ public class TargetManager {
         return SpawnNewTarget();
     }
 
-    public void RemoveAll(){
-        for(BlockPos target : targets) {
+    public void RemoveAll() {
+        Iterator<BlockPos> iterator = targets.iterator(); // Step 1: Create an iterator
+        while (iterator.hasNext()) { // Step 2: Iterate using the iterator
+            BlockPos target = iterator.next();
             world.setBlockAndUpdate(target, Blocks.AIR.defaultBlockState());
+            iterator.remove(); // Step 3: Remove elements safely
         }
     }
 
@@ -85,6 +91,13 @@ public class TargetManager {
         if(y < 60){
             y = 60;
         }
+
+        if(singleTarget){
+            x = 30;
+            y = 65;
+            z = 0;
+        }
+
         BlockPos targetPos = new BlockPos(x, y, z);
         targets.add(targetPos);
         boolean isEmpty = world.isEmptyBlock(targetPos);

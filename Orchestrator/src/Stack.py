@@ -37,3 +37,13 @@ class Stack:
     def __str__(self):
         # Return a string representation of the stack
         return str(self.stack)
+
+    async def element_exists(self, clientId):
+        # Check if an element with the given clientId exists in the stack
+        async with self.lock:
+            return any(item[0] == clientId for item in self.stack)
+
+    async def element_remove(self, clientId):
+        # Remove all elements with the given clientId from the stack
+        async with self.lock:
+            self.stack = [item for item in self.stack if item[0] != clientId]

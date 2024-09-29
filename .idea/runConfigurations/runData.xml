@@ -1,17 +1,18 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="runData" type="Application" factoryName="Application" singleton="true">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component>
+  <configuration default="false" factoryName="Application" name="runData" singleton="false" type="Application">
+    <option name="MAIN_CLASS_NAME" value="net.minecraftforge.bootstrap.ForgeBootstrap"/>
+    <option name="VM_PARAMETERS" value="-Dforge.logging.console.level=debug -Dmixin.dumpTargetOnFailure=true -Dforge.logging.markers=REGISTRIES -Dnet.minecraftforge.gradle.GradleStart.srg.srg-mcp=C:\Users\zerop\IdeaProjects\AiBowProject\build\createSrgToMcp\output.srg -Dmixin.env.remapRefMap=true -Dmixin.env.refMapRemappingFile=C:\Users\zerop\IdeaProjects\AiBowProject\build\createSrgToMcp\output.srg -Dmixin.debug.verbose=true -Dmixin.debug.export=true -Djava.net.preferIPv6Addresses=system"/>
+    <option name="PROGRAM_PARAMETERS" value="--launchTarget forge_userdev_data --assetIndex 17 --assetsDir C:\Users\zerop\PycharmProjects\NeuralBow\Minecraft\BowItem\caches\forge_gradle\assets --gameDir . --mod aibowproject --all --output C:\Users\zerop\IdeaProjects\AiBowProject\src\generated\resources --existing C:\Users\zerop\IdeaProjects\AiBowProject\src\main\resources --mixin.config aibowproject.mixins.json"/>
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$\run-data"/>
+    <module name="AiBowProject.main"/>
     <envs>
-      <env name="MOD_CLASSES" value="$PROJECT_DIR$/../AiBowProject\build\sourcesSets\main" />
-      <env name="MCP_MAPPINGS" value="official_1.21" />
+      <env name="MOD_CLASSES" value="$PROJECT_DIR$\build\sourcesSets\main"/>
+      <env name="MCP_MAPPINGS" value="official_1.21.1"/>
     </envs>
-    <option name="MAIN_CLASS_NAME" value="net.minecraftforge.bootstrap.ForgeBootstrap" />
-    <module name="AiBowProject" />
-    <option name="PROGRAM_PARAMETERS" value="--launchTarget forge_userdev_data --assetIndex 17 --assetsDir C:\Users\mvandekamp\.gradle\caches\forge_gradle\assets --gameDir . --mod aibowproject --all --output C:\Users\mvandekamp\IdeaProjects\AiBowProject\src\generated\resources --existing C:\Users\mvandekamp\IdeaProjects\AiBowProject\src\main\resources" />
-    <option name="VM_PARAMETERS" value="-Dforge.logging.console.level=debug -Dforge.logging.markers=REGISTRIES -Djava.net.preferIPv6Addresses=system" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../AiBowProject\run-data" />
     <method v="2">
-      <option name="Make" enabled="true" />
-      <option name="Gradle.BeforeRunTask" enabled="true" tasks=":prepareRunDataCompile" externalProjectPath="$PROJECT_DIR$" />
+      <option enabled="true" name="Make"/>
+      <option enabled="true" externalProjectPath="$PROJECT_DIR$" name="Gradle.BeforeRunTask" tasks=":prepareRunDataCompile"/>
     </method>
   </configuration>
 </component>

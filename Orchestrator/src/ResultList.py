@@ -12,7 +12,16 @@ class ResultList:
             if item[0] == clientId and item[3] == workItemId:
                 del self.items[i]
                 return
-        raise ValueError(f"Item with clientId {clientId} not found")
+
+    def remove_all_from_client(self, clientId):
+        # Remove the first occurrence of the item with the specified clientId
+        for i, item in enumerate(self.items):
+            if item[0] == clientId:
+                del self.items[i]
+                return
+
+    def size(self):
+        return len(self.items)
 
     def get(self, clientId, workItemId):
         # Get the item with the specified clientId

@@ -3,6 +3,9 @@ package de.mvdk.aibowproject;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -15,7 +18,10 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
@@ -29,6 +35,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Mixins;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(AiBowProject.MODID)
@@ -64,6 +71,7 @@ public class AiBowProject {
             }).build());
 
     public AiBowProject() {
+
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         PlayerMovementHandler playerMovementHandler = new PlayerMovementHandler();
         MinecraftForge.EVENT_BUS.register(playerMovementHandler);
@@ -95,6 +103,7 @@ public class AiBowProject {
     private void commonSetup(final FMLCommonSetupEvent event) {
         // Some common setup code
         LOGGER.info("HELLO FROM COMMON SETUP");
+        LOGGER.info("letrollage");
         LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
 
         if (Config.logDirtBlock)
@@ -110,7 +119,13 @@ public class AiBowProject {
         targetManager.RemoveAll();
     }
 
-
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
+            // Prevent the game from pausing when the window loses focus
+            Minecraft.getInstance().options.pauseOnLostFocus = false;
+        }
+    }
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event)
@@ -134,6 +149,7 @@ public class AiBowProject {
         {
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
+            LOGGER.info("letrollage");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
     }

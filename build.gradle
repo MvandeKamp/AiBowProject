@@ -4,6 +4,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
     id "com.google.protobuf" version "0.9.4"
+    id 'com.github.johnrengelman.shadow' version '8.1.+'
 }
 
 
@@ -55,7 +56,7 @@ minecraft {
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: mapping_channel, version: mapping_version
-
+    reobf = false
     // When true, this property will have all Eclipse/IntelliJ IDEA run configurations run the "prepareX" task for the given run configuration before launching the game.
     // In most cases, it is not necessary to enable.
     // enableEclipsePrepareRuns = true
@@ -128,8 +129,7 @@ minecraft {
 }
 
 mixin {
-    add sourceSets.main, 'de.mvdk.aibowproject.refmap.json'
-    config 'aibowproject.mixins.json'
+    config 'mixins.aibowproject.json'
 
     debug.verbose = true
     debug.export = true
@@ -159,7 +159,8 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-
+    testAnnotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    implementation 'org.spongepowered:mixin:0.8.5'
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
@@ -174,14 +175,37 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    runtimeOnly('io.grpc:grpc-netty-shaded:1.65.0') {
-    }
-    implementation('io.grpc:grpc-protobuf:1.65.0') {
-    }
-    implementation('io.grpc:grpc-stub:1.65.0') {
-    }
+    implementation 'io.grpc:grpc-netty-shaded:1.65.0'
+    implementation 'io.grpc:grpc-protobuf:1.65.0'
+    implementation 'io.grpc:grpc-stub:1.65.0'
+    implementation 'io.grpc:grpc-core:1.65.0'
     compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
 }
+
+
+shadowJar {
+    archiveClassifier.set('') // This will replace the default JAR
+
+    // Include only specific dependencies
+    dependencies {
+        include(dependency('io.grpc:grpc-netty-shaded'))
+        include(dependency('io.grpc:grpc-protobuf'))
+        include(dependency('io.grpc:grpc-stub'))
+        include(dependency('io.grpc:grpc-core'))
+        include(dependency('io.grpc:grpc-api'))
+        include(dependency('io.grpc:grpc-protobuf-lite'))
+        include(dependency('io.perfmark:perfmark-api'))
+        include(dependency('com.google.protobuf:protobuf-java'))
+    }
+
+    // Exclude all other dependencies
+    configurations = [project.configurations.runtimeClasspath]
+
+    // Optionally, merge service files if needed
+    mergeServiceFiles()
+    zip64 false // Enable ZIP64 for large JARs
+}
+
 
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
@@ -212,12 +236,12 @@ tasks.named('jar', Jar).configure {
                 "Implementation-Title": project.name,
                 "Implementation-Version": project.jar.archiveVersion,
                 "Implementation-Vendor": mod_authors,
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": "mixins.aibowproject.json"
         ])
     }
 
-    // This is the preferred method to reobfuscate your jar file
-    finalizedBy 'reobfJar'
+
 }
 
 tasks.withType(JavaCompile).configureEach {

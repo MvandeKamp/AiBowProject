@@ -1,10 +1,13 @@
 package de.mvdk.aibowproject.mixins;
 
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.User;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.server.DownloadedPackSource;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
@@ -43,14 +46,21 @@ public abstract class SetScreen {
 
     @Inject(method = "setScreen", at = @At("TAIL"))
     private void autoLoadLevel(@Nullable Screen screen, CallbackInfo info) throws IOException, InterruptedException {
+        LogUtils.getLogger().info("new Screen state");
         if (screen instanceof TitleScreen && !wasLoaded) {
             wasLoaded = true;
+            LogUtils.getLogger().info("Loading level data...");
 
             Minecraft client = Minecraft.getInstance();
-            if (client != null && client.getLevelSource().levelExists("aiTrain")) {
+            User player = client.getUser();
+            if (client != null
+                    && player != null
+                    && client.getLevelSource().
+                        levelExists(
+                                player.getName())) {
                 try {
-                    LevelStorageSource.LevelStorageAccess access = client.getLevelSource().createAccess("aiTrain");
-
+                    LevelStorageSource.LevelStorageAccess access = client.getLevelSource().createAccess(player.getName());
+                    LogUtils.getLogger().info("For User: {}", player.getName());
                     Dynamic<?> dynamic;
                     LevelSummary levelsummary;
 
